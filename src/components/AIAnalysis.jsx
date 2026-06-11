@@ -164,11 +164,13 @@ ${timeSummary}
 
       const result = await response.json();
       
-      if (result.candidates && result.candidates[0] && result.candidates[0].content) {
+      if (result.error) {
+        setError(`API 에러: ${result.error.message || result.error.status}`);
+      } else if (result.candidates && result.candidates[0] && result.candidates[0].content) {
         const text = result.candidates[0].content.parts[0].text;
         setAnalysis(text);
       } else {
-        setError('AI 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
+        setError('AI 응답 구조가 예상과 다릅니다: ' + JSON.stringify(result).substring(0, 100));
       }
     } catch (err) {
       console.error('AI Analysis Error:', err);
